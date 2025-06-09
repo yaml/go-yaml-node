@@ -1,0 +1,9 @@
+#   comment 1
+---
+# comment 2
+foo: 1   #  comment 3
+
+  #     comment 4
+
+bar: 2
+  #   comment 5
