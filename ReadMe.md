@@ -86,6 +86,6 @@ go install github.com/ingydotnet/go-yaml-node@latest
 
 Copyright 2025 - Ingy döt Net
 
-This project is licensed under the MIT License.
+This project is licensed under the Apache License, Version 2.0.
 
 See the [LICENSE](LICENSE) file for details.
