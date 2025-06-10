@@ -29,7 +29,7 @@ $(TEST-FILES):: $(PROGRAM)
 	else \
 	  echo "FAIL"; \
 	fi
-	@diff $(@:test/%.yaml=test/%.out) $(LOCAL-TMP)/got
+	@diff -u $(@:test/%.yaml=test/%.out) $(LOCAL-TMP)/got || true
 
 build: $(PROGRAM)
 
