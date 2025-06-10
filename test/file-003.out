@@ -1,0 +1,95 @@
+Kind: Document
+Foot: "# foot 7"
+More:  
+    Kind: Mapping
+    More:  
+        Kind: Scalar
+        Head:
+          "# Show all the things
+          
+          # head 1"
+        Line: "# line 2"
+        Text: "foo"
+        
+        Kind: Sequence
+        More:  
+            Kind: Scalar
+            Head: "# head 3"
+            Line: "# line 4"
+            Text: "one"
+            
+            Kind: Scalar
+            Styl: Single
+            Head: "# head 5"
+            Line: "# line 6"
+            Text: "two"
+            
+            Kind: Scalar
+            Styl: Double
+            Text: "three"
+            
+            Kind: Scalar
+            Styl: Literal
+            Text: "four"
+            
+            Kind: Scalar
+            Styl: Folded
+            Text: "five"
+            
+Kind: Document
+More:  
+    Kind: Mapping
+    More:  
+        Kind: Scalar
+        Head:
+          "# head 8
+          # head 9"
+        Text: "bar"
+        
+        Kind: Sequence
+        More:  
+            Kind: Scalar
+            Tag : !!int
+            Text: "123"
+            
+            Kind: Scalar
+            Tag : !!float
+            Text: "3.1415"
+            
+            Kind: Scalar
+            Tag : !!bool
+            Text: "true"
+            
+            Kind: Scalar
+            Tag : !!null
+            Text: "null"
+            
+            Kind: Sequence
+            Styl: Flow
+            More:  
+                Kind: Scalar
+                Text: "a"
+                
+                Kind: Scalar
+                Text: "b"
+                
+                Kind: Scalar
+                Text: "c"
+                
+            Kind: Mapping
+            Styl: Flow
+            More:  
+                Kind: Scalar
+                Text: "a"
+                
+                Kind: Scalar
+                Tag : !!int
+                Text: "1"
+                
+                Kind: Scalar
+                Text: "b"
+                
+                Kind: Scalar
+                Tag : !!int
+                Text: "2"
+                

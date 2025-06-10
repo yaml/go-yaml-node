@@ -1,0 +1,26 @@
+# Show all the things
+
+---
+# head 1
+foo: # line 2
+# head 3
+- one # line 4
+# head 5
+- 'two' # line 6
+- "three"
+- |-
+  four
+- >-
+  five
+# foot 7
+...
+# head 8
+---
+# head 9
+bar:
+- 123
+- 3.1415
+- true
+- null
+- [a, b, c]
+- {a: 1, b: 2}

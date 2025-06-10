@@ -19,20 +19,34 @@ endif
 default::
 	@printf '%s\n' $(TEST-FILES)
 
-test:
-	$(MAKE) -s $(TEST-FILES) | less -FRX
+test-go: $(GO)
+	go test ./...
+
+test: $(TEST-FILES)
+
+# $(MAKE) -s $(TEST-FILES) | less -FRX
 
 .PHONY: $(TEST-FILES)
 $(TEST-FILES):: $(PROGRAM)
-	@( \
-	  echo "==== Input — $@"; \
-	  echo; \
-	  cat $@; \
-	  echo; \
-	  echo '==== Output:'; \
-	  echo; \
-	  $< < $@; \
-	)
+	@printf "$@ "
+	@$< < $@ > $(LOCAL-TMP)/got
+	@if diff -q $(@:test/%.yaml=test/%.out) $(LOCAL-TMP)/got; then \
+	  echo "PASS"; \
+	else \
+	  echo "FAIL"; \
+	fi
+	@diff $(@:test/%.yaml=test/%.out) $(LOCAL-TMP)/got
+
+
+# @( \
+#   echo "==== Input — $@"; \
+#   echo; \
+#   cat $@; \
+#   echo; \
+#   echo '==== Output:'; \
+#   echo; \
+#   $< < $@; \
+# )
 
 build: $(PROGRAM)
 

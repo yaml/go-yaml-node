@@ -1,0 +1,21 @@
+Kind: Document
+More:  
+    Kind: Mapping
+    Styl: Flow
+    Line: "#   comment 4"
+    More:  
+        Kind: Scalar
+        Head: "#   comment 2"
+        Text: "foo"
+        
+        Kind: Scalar
+        Line: "#   comment 3"
+        Text: "bar"
+        
+Kind: Document
+Foot: "#  comment 5"
+More:  
+    Kind: Scalar
+    Tag : !!null
+    Text: ""
+    
