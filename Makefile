@@ -1,3 +1,4 @@
+# Using the "Makes" Makefile setup - https://github.com/makeplus/makes
 M := .git/.makes
 $(shell [ -d $M ] || git clone -q https://github.com/makeplus/makes $M)
 include $M/init.mk
@@ -6,7 +7,7 @@ include $M/go.mk
 override PATH := $(ROOT):$(PATH)
 export PATH
 
-PROGRAM := yaml-node-dump
+PROGRAM := go-yaml-node
 
 TEST-FILES := $(wildcard test/*.yaml)
 
@@ -15,16 +16,9 @@ TEST-FILES := $(file)
 endif
 
 
-# Print Makefile targets summary
 default::
-	@printf '%s\n' $(TEST-FILES)
-
-test-go: $(GO)
-	go test ./...
 
 test: $(TEST-FILES)
-
-# $(MAKE) -s $(TEST-FILES) | less -FRX
 
 .PHONY: $(TEST-FILES)
 $(TEST-FILES):: $(PROGRAM)
@@ -37,18 +31,20 @@ $(TEST-FILES):: $(PROGRAM)
 	fi
 	@diff $(@:test/%.yaml=test/%.out) $(LOCAL-TMP)/got
 
-
-# @( \
-#   echo "==== Input — $@"; \
-#   echo; \
-#   cat $@; \
-#   echo; \
-#   echo '==== Output:'; \
-#   echo; \
-#   $< < $@; \
-# )
-
 build: $(PROGRAM)
+
+install: $(PROGRAM)
+ifndef PREFIX
+	$(error PREFIX is not set)
+else
+	install -m 0755 $(PROGRAM) $(PREFIX)/bin/$(PROGRAM)
+endif
+
+tidy: $(GO)
+	go mod tidy
+
+fmt: $(GO)
+	go fmt
 
 clean:
 	$(RM) $(PROGRAM)

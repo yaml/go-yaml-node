@@ -1,4 +1,4 @@
-module yaml-node-dump
+module go-yaml-node
 
 go 1.22
 
