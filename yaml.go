@@ -10,29 +10,20 @@ import (
 	"io"
 	"log"
 	"os"
-	"strings"
 )
 
-// Constants for YAML node kinds and styles.
-const (
-	// YAML node kinds as defined in yaml.v3
-	kindDocument = int(yaml.DocumentNode)
-	kindSequence = int(yaml.SequenceNode)
-	kindMapping  = int(yaml.MappingNode)
-	kindScalar   = int(yaml.ScalarNode)
-	kindAlias    = int(yaml.AliasNode)
-
-	// YAML node styles as defined in yaml.v3
-	styleTagged  = int(yaml.TaggedStyle)
-	styleDouble  = int(yaml.DoubleQuotedStyle)
-	styleSingle  = int(yaml.SingleQuotedStyle)
-	styleLiteral = int(yaml.LiteralStyle)
-	styleFolded  = int(yaml.FoldedStyle)
-	styleFlow    = int(yaml.FlowStyle)
-
-	// indent defines the number of spaces used for indentation
-	indent = "  "
-)
+// NodeInfo represents the information about a YAML node
+type NodeInfo struct {
+	Kind    string      `yaml:"kind"`
+	Style   string      `yaml:"style,omitempty"`
+	Anchor  string      `yaml:"anchor,omitempty"`
+	Tag     string      `yaml:"tag,omitempty"`
+	Head    string      `yaml:"head,omitempty"`
+	Line    string      `yaml:"line,omitempty"`
+	Foot    string      `yaml:"foot,omitempty"`
+	Text    string      `yaml:"text,omitempty"`
+	Content []*NodeInfo `yaml:"content,omitempty"`
+}
 
 // main reads YAML from stdin, parses it, and outputs the node structure
 func main() {
@@ -48,123 +39,84 @@ func main() {
 		if err != nil {
 			log.Fatal("Failed to load YAML node:", err)
 		}
-		fmt.Println(formatNode(node))
+		info := formatNode(node)
+		output, err := yaml.Marshal(info)
+		if err != nil {
+			log.Fatal("Failed to marshal node info:", err)
+		}
+		fmt.Print(string(output))
 	}
 }
 
-// formatNode converts a YAML node into a formatted string representation,
-// including its kind, value (for scalars), comments, and nested content.
-func formatNode(n yaml.Node) string {
-	kind := formatKind(int(n.Kind))
-	style := formatStyle(int(n.Style))
-	tag := formatTag(n.Tag)
+// formatNode converts a YAML node into a NodeInfo structure
+func formatNode(n yaml.Node) *NodeInfo {
+	info := &NodeInfo{
+		Kind: formatKind(n.Kind),
+	}
 
-	var o string
-
-	o += fmt.Sprintf("Kind: %v\n", kind)
-
-	if style != "" {
-		o += fmt.Sprintf("Styl: %v\n", style)
+	if style := formatStyle(n.Style); style != "" {
+		info.Style = style
 	}
 	if n.Anchor != "" {
-		o += fmt.Sprintf("Anch: &%v\n", n.Anchor)
+		info.Anchor = n.Anchor
 	}
-	if tag != "" {
-		o += fmt.Sprintf("Tag : %v\n", n.Tag)
+	if tag := formatTag(n.Tag); tag != "" {
+		info.Tag = tag
 	}
 	if n.HeadComment != "" {
-		o += fmt.Sprintf("Head:%v\n", quote(n.HeadComment))
+		info.Head = n.HeadComment
 	}
 	if n.LineComment != "" {
-		o += fmt.Sprintf("Line:%v\n", quote(n.LineComment))
+		info.Line = n.LineComment
 	}
 	if n.FootComment != "" {
-		o += fmt.Sprintf("Foot:%v\n", quote(n.FootComment))
+		info.Foot = n.FootComment
 	}
 
-	if kind == "Scalar" {
-		o += fmt.Sprintf("Text:%v\n", quote(n.Value))
-	} else {
-		o += fmt.Sprintf("More:%v", formatCollection(n.Content))
-	}
-
-	return o
-}
-
-// quote formats a string as a quoted YAML scalar, preserving newlines.
-func quote(s string) string {
-	quoted := fmt.Sprintf("\"%v\"", s)
-	lines := strings.Split(quoted, "\n")
-	if len(lines) == 1 {
-		return " " + quoted
-	}
-	var result string
-	for i, line := range lines {
-		result += indent + line
-		if i < len(lines)-1 {
-			result += "\n"
+	if info.Kind == "Scalar" {
+		info.Text = n.Value
+	} else if n.Content != nil {
+		info.Content = make([]*NodeInfo, len(n.Content))
+		for i, node := range n.Content {
+			info.Content[i] = formatNode(*node)
 		}
 	}
-	return "\n" + result
+
+	return info
 }
 
-// FormatCollection formats a slice of YAML nodes, applying proper indentation
-// to maintain the hierarchical structure.
-func formatCollection(c []*yaml.Node) string {
-	var o string
-
-	for _, node := range c {
-		o = fmt.Sprintf(
-			"%s\n%s",
-			o,
-			chomp(
-				indentString(
-					formatNode(*node),
-				),
-			),
-		)
-	}
-
-	return indentString(o)
-}
-
-// chomp removes trailing newlines from a string.
-func chomp(s string) string {
-	return strings.TrimSuffix(s, "\n")
-}
-
-// formatKind converts a YAML node kind integer to its string representation.
-func formatKind(i int) string {
-	switch i {
-	case kindDocument:
+// formatKind converts a YAML node kind into its string representation.
+func formatKind(k yaml.Kind) string {
+	switch k {
+	case yaml.DocumentNode:
 		return "Document"
-	case kindSequence:
+	case yaml.SequenceNode:
 		return "Sequence"
-	case kindMapping:
+	case yaml.MappingNode:
 		return "Mapping"
-	case kindScalar:
+	case yaml.ScalarNode:
 		return "Scalar"
-	case kindAlias:
+	case yaml.AliasNode:
 		return "Alias"
 	default:
 		return "Unknown"
 	}
 }
 
-// formatStyle converts a YAML node style integer to its string representation.
-func formatStyle(i int) string {
-	switch i {
-	case styleTagged:
+// formatStyle converts a YAML node style into its string representation.
+func formatStyle(s yaml.Style) string {
+	switch s {
+	case yaml.TaggedStyle:
 		return "Tagged"
-	case styleDouble:
+	case yaml.DoubleQuotedStyle:
 		return "Double"
-	case styleSingle:
+	case yaml.SingleQuotedStyle:
 		return "Single"
-	case styleLiteral:
+	case yaml.LiteralStyle:
 		return "Literal"
-	case styleFolded:
+	case yaml.FoldedStyle:
 		return "Folded"
-	case styleFlow:
+	case yaml.FlowStyle:
 		return "Flow"
 	}
 	return ""
@@ -176,17 +128,4 @@ func formatTag(tag string) string {
 		return ""
 	}
 	return tag
-}
-
-// indentString adds indentation to each line of the input string.
-func indentString(s string) string {
-	var result string
-	lines := strings.Split(s, "\n")
-	for i, line := range lines {
-		result += indent + line
-		if i < len(lines)-1 || strings.HasSuffix(s, "\n") {
-			result += "\n"
-		}
-	}
-	return result
 }
