@@ -1,0 +1,77 @@
+kind: Document
+foot: '# foot 7'
+content:
+    - kind: Mapping
+      content:
+        - kind: Scalar
+          head: |-
+            # Show all the things
+
+            # head 1
+          line: '# line 2'
+          text: foo
+        - kind: Sequence
+          content:
+            - kind: Scalar
+              head: '# head 3'
+              line: '# line 4'
+              text: one
+            - kind: Scalar
+              style: Single
+              head: '# head 5'
+              line: '# line 6'
+              text: two
+            - kind: Scalar
+              style: Double
+              text: three
+            - kind: Scalar
+              style: Literal
+              text: four
+            - kind: Scalar
+              style: Folded
+              text: five
+kind: Document
+content:
+    - kind: Mapping
+      content:
+        - kind: Scalar
+          head: |-
+            # head 8
+            # head 9
+          text: bar
+        - kind: Sequence
+          content:
+            - kind: Scalar
+              tag: '!!int'
+              text: "123"
+            - kind: Scalar
+              tag: '!!float'
+              text: "3.1415"
+            - kind: Scalar
+              tag: '!!bool'
+              text: "true"
+            - kind: Scalar
+              tag: '!!null'
+              text: "null"
+            - kind: Sequence
+              style: Flow
+              content:
+                - kind: Scalar
+                  text: a
+                - kind: Scalar
+                  text: b
+                - kind: Scalar
+                  text: c
+            - kind: Mapping
+              style: Flow
+              content:
+                - kind: Scalar
+                  text: a
+                - kind: Scalar
+                  tag: '!!int'
+                  text: "1"
+                - kind: Scalar
+                  text: b
+                - kind: Scalar
+                  tag: '!!int'
+                  text: "2"

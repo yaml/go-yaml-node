@@ -21,37 +21,31 @@ Example:
 
 ```
 $ go-yaml-node <<< 'scalar forms: [null, true, yes, 0xcafe, 0o123, 12:34:56]'
-Kind: Document
-More:
-    Kind: Mapping
-    More:
-        Kind: Scalar
-        Text: "scalar forms"
-
-        Kind: Sequence
-        Styl: Flow
-        More:
-            Kind: Scalar
-            Tag : !!null
-            Text: "null"
-
-            Kind: Scalar
-            Tag : !!bool
-            Text: "true"
-
-            Kind: Scalar
-            Text: "yes"
-
-            Kind: Scalar
-            Tag : !!int
-            Text: "0xcafe"
-
-            Kind: Scalar
-            Tag : !!int
-            Text: "0o123"
-
-            Kind: Scalar
-            Text: "12:34:56"
+kind: Document
+content:
+    - kind: Mapping
+      content:
+        - kind: Scalar
+          text: scalar forms
+        - kind: Sequence
+          style: Flow
+          content:
+            - kind: Scalar
+              tag: '!!null'
+              text: "null"
+            - kind: Scalar
+              tag: '!!bool'
+              text: "true"
+            - kind: Scalar
+              text: "yes"
+            - kind: Scalar
+              tag: '!!int'
+              text: "0xcafe"
+            - kind: Scalar
+              tag: '!!int'
+              text: "0o123"
+            - kind: Scalar
+              text: "12:34:56"
 ```
 
 

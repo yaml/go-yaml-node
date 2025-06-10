@@ -20,16 +20,23 @@ default::
 
 test: $(TEST-FILES)
 
+test-update: $(PROGRAM)
+	@for f in $(TEST-FILES); do \
+		printf "Updating %s... " "$$f"; \
+		./$(PROGRAM) < "$$f" > "$${f%.yaml}.want"; \
+		echo "done"; \
+	done
+
 .PHONY: $(TEST-FILES)
 $(TEST-FILES):: $(PROGRAM)
 	@printf "$@ "
 	@$< < $@ > $(LOCAL-TMP)/got
-	@if diff -q $(@:test/%.yaml=test/%.out) $(LOCAL-TMP)/got; then \
+	@if diff -q $(@:test/%.yaml=test/%.want) $(LOCAL-TMP)/got; then \
 	  echo "PASS"; \
 	else \
 	  echo "FAIL"; \
 	fi
-	@diff -u $(@:test/%.yaml=test/%.out) $(LOCAL-TMP)/got || true
+	@diff -u $(@:test/%.yaml=test/%.want) $(LOCAL-TMP)/got || true
 
 build: $(PROGRAM)
 

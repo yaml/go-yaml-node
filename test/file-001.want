@@ -1,0 +1,21 @@
+kind: Document
+content:
+    - kind: Mapping
+      content:
+        - kind: Scalar
+          head: |-
+            #   comment 1
+            # comment 2
+          text: foo
+        - kind: Scalar
+          style: Double
+          line: '#  comment 3'
+          text: '1 '
+        - kind: Scalar
+          head: |
+            #     comment 4
+          foot: '#   comment 5'
+          text: bar
+        - kind: Scalar
+          tag: '!!int'
+          text: "2"

@@ -1,0 +1,17 @@
+kind: Document
+content:
+    - kind: Mapping
+      style: Flow
+      line: '#   comment 4'
+      content:
+        - kind: Scalar
+          head: '#   comment 2'
+          text: foo
+        - kind: Scalar
+          line: '#   comment 3'
+          text: bar
+kind: Document
+foot: '#  comment 5'
+content:
+    - kind: Scalar
+      tag: '!!null'
