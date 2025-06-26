@@ -1,7 +1,9 @@
 # Using the "Makes" Makefile setup - https://github.com/makeplus/makes
-M := .git/.makes
+M := .cache/makes
 $(shell [ -d $M ] || git clone -q https://github.com/makeplus/makes $M)
 include $M/init.mk
+include $M/clean.mk
+GO-CMDS-SKIP := install
 include $M/go.mk
 
 override PATH := $(ROOT):$(PATH)
@@ -14,6 +16,8 @@ TEST-FILES := $(wildcard test/*.yaml)
 ifneq (,$(file))
 TEST-FILES := $(file)
 endif
+
+MAKES-CLEAN := $(PROGRAM)
 
 
 default::
@@ -46,15 +50,6 @@ ifndef PREFIX
 else
 	install -m 0755 $(PROGRAM) $(PREFIX)/bin/$(PROGRAM)
 endif
-
-tidy: $(GO)
-	go mod tidy
-
-fmt: $(GO)
-	go fmt
-
-clean:
-	$(RM) $(PROGRAM)
 
 $(PROGRAM): yaml.go $(GO)
 	go mod tidy
