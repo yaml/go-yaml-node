@@ -5,6 +5,7 @@ include $M/init.mk
 include $M/clean.mk
 GO-CMDS-SKIP := install
 include $M/go.mk
+include $M/shell.mk
 
 override PATH := $(ROOT):$(PATH)
 export PATH
@@ -22,7 +23,7 @@ MAKES-CLEAN := $(PROGRAM)
 
 default::
 
-test: $(TEST-FILES)
+test:: $(TEST-FILES)
 
 test-update: $(PROGRAM)
 	@for f in $(TEST-FILES); do \
@@ -42,7 +43,7 @@ $(TEST-FILES):: $(PROGRAM)
 	fi
 	@diff -u $(@:test/%.yaml=test/%.want) $(LOCAL-TMP)/got || true
 
-build: $(PROGRAM)
+build:: $(PROGRAM)
 
 install: $(PROGRAM)
 ifndef PREFIX
